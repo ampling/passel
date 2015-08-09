@@ -1,63 +1,90 @@
 #! /user/bin/env python3
-#
+
 # Copycenter [2015-08-06], ISC, [Ampling] 
 
 
-import argparse
+from subprocess import call, Popen, PIPE
 from glob import glob
-import subprocess
-import os
+import argparse
 import sys
+import os
+import gpgme
 
 
-# CONFIG
-PASSWORD_STORE_DIR = '.password-store/'
-
-# global veriables
-home = os.path.expanduser("~")
-store = home + "/" + PASSWORD_STORE_DIR
-
-
-#loop
-def loop(): #{
-    global entry_list
-    for file in entry_list:
-        global path
-        names = glob(store+"/"+file+"*")
-        global name
-        name = names[0]
-        clip()
+# CONFIGURABLE {
+# Password Files:-$HOME/
+PASSWORD_STORE_DIR = '.password-store/test'
+# Let pass handle gpg
+use_Pass = 1
 #}
 
-# shell magic
-def clip(): #{
+# global veriables #{
+home = os.path.expanduser("~")
+store = home + "/" + PASSWORD_STORE_DIR + "/"
+#}
+
+#
+# BEGIN helper functions
+#
+
+#{ shell to Xclip
+def _copyXclip(text):
+        p = Popen(['xclip', '-selection', 'c', '-l', '1', '-quiet'], stdin=PIPE,
+                close_fds=True)
+        p.communicate(input=text.encode('utf-8'))
+#}
+
+#{ shell to pass
+def _pass(text):
+        p = Popen(['pass', ''], stdin=PIPE,
+                close_fds=True)
+        p.communicate(input=text.encode('utf-8'))
+#}
+
+
+
+#
+# BEGIN platform definable
+#
+
+#entry
+def entry(): #{
+    global entry_file
+    for file in entry_file:
+        global path
+        names = glob(store+"/"+file+"*.gpg")
+        global name
+        name = names[0]
+        reclip()
+#}
+
+
+def reclip(): #{  reclip it
     global store
     global name
     afile = name.replace(store, '', 1)
     os.environ['afile'] = afile
-    print(afile)
-    #subprocess.call('pass $afile | xclip -l 1 -quiet -selection clipboard',shell=True)
+    _copyXclip(afile)
 #}
 
 
-# Define Options
-def main(): #{
-    parser = argparse.ArgumentParser(description='Select some files')
+#{ Define Options
+def main():
+    parser = argparse.ArgumentParser(description='Select some files', prog='passel')
     parser.add_argument("entry", help="Sends the entry to Xclip",
             type=str)
     #parser.add_argument("path", "path",help="path/to/file",
     #        type=str)
     args = parser.parse_args()
     
-    global entry_list
-    entry_list = list(str(args.entry))
+    global entry_file
+    entry_file = list(str(args.entry))
     
 
-
-    #entry_count = (len(entry_list))
-    #print(entry_list[entry_count - 1])
+    #entry_count = (len(entry_file))
+    #print(entry_file[entry_count - 1])
 #}
 
 if __name__ == '__main__':
     main()
-    loop()
+    entry()
