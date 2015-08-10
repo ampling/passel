@@ -1,7 +1,15 @@
 #! /user/bin/env python3
 
-# Copycenter [2015-08-06], ISC, [Ampling] 
+##############################################################################
+#
+# Copycenter (c) [2015-08-06], ISC, [Ampling]
+#
+##############################################################################
+""" Passel 
 
+Passel is a friendly command-line password selection interface
+for people with a lot of digital credentials.
+"""
 
 from subprocess import call, Popen, PIPE
 from glob import glob
@@ -18,7 +26,7 @@ PASSWORD_STORE_DIR = '.password-store/test'
 use_Pass = 1
 #}
 
-# global veriables #{
+# global variables #{
 home = os.path.expanduser("~")
 store = home + "/" + PASSWORD_STORE_DIR + "/"
 #}
