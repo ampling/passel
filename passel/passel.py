@@ -14,8 +14,6 @@ for people with a lot of digital credentials.
 from subprocess import call, Popen, PIPE
 from glob import glob
 import argparse
-import sys
-import os
 import gpgme
 
 
