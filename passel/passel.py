@@ -64,8 +64,8 @@ def entry(): #{
         reclip()
 #}
 
-
-def reclip(): #{  reclip it
+#reclip it
+def reclip(): #{
     global store
     global name
     afile = name.replace(store, '', 1)
